@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Сотрудники</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
     <h2>Список сотрудников</h2>
@@ -23,13 +24,12 @@
             <th>Дата рождения</th>
             <th>Должность</th>
             <th>Дата начала работы</th>
-            <th>Изменить</th>
-            <th>Список отпусков</th>
+            <th> </th>
+            <th> </th>
         </tr>
-
         <tr th:each="employee : ${employees}">
             <td th:utext="${employee.employeeId}">Id</td>
-            <td th:herf="@{/employees/{employeeId}(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">ФИО</td>
+            <td><a th:href="@{/employees/{employeeId}/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
             <td th:utext="${employee.dateOfBirth}">Дата рождения</td>
             <td th:utext="${employee.position}">Должность</td>
             <td th:utext="${employee.startDate}">Дата начала работы</td>
