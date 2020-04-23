@@ -1,6 +1,6 @@
 INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Зимина Аврора Мартыновна','1986-06-12','Директор','2004-05-28','Login1','1234');
 INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Рябова Инна Серапионовна','1994-10-11','Менеджер','2004-03-30','Login2','1234');
-INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Герасимов Юстиниан Владиславович','1985-04-03','Бухгалтер','2004-02-18','Login3','1234');
+INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Герасимов Юрий Владиславович','1985-04-03','Бухгалтер','2004-02-18','Login3','1234');
 INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Степанов Ермак Ростиславович','1977-09-22','Специалист','2005-07-02','Login4','1234');
 INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Мухина Нелли Николаевна','1966-04-25','Стажер','2006-07-25','Login5','1234');
 INSERT INTO Employee(FULL_NAME, BIRTH_DATE, POSITION, START_DATE, LOGIN, PASSWORD) VALUES('Гаврилов Велорий Федорович','1988-07-10','Менеджер','2009-05-19','Login6','1234');

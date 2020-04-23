@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Сотрудник</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <h1>Сотрудник</h1>
+    <a th:href="@{/employees}">Назад к списку сотрудников</a>
+    <br/><br/>
+    <div th:if="${employee}">
+        <table border="0">
+            <tr>
+                <td>ID</td>
+                <td>:</td>
+                <td th:utext="${employee.employeeId}"></td>
+            </tr>
+            <tr>
+                <td>ФИО</td>
+                <td>:</td>
+                <td th:utext="${employee.fullName}"></td>
+            </tr>
+            <tr>
+                <td>Дата рождения</td>
+                <td>:</td>
+                <td th:utext="${employee.dateOfBirth}"></td>
+            </tr>
+            <tr>
+                <td>Должность</td>
+                <td>:</td>
+                <td th:utext="${employee.position}">  </td>
+            </tr>
+            <tr>
+                <td>Дата начала работы</td>
+                <td>:</td>
+                <td th:utext="${employee.startDate}">  </td>
+            </tr>
+            <tr>
+                <td>Дата начала работы</td>
+                <td>:</td>
+                <td th:utext="${employee.startDate}">  </td>
+            </tr>
+        </table>
+        <br/><br/>
+        <div th:if="not ${allowDelete}">
+            <a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}">Изменить</a> |
+            <a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}">Удалить</a>
+        </div>
+        <form th:if="${allowDelete}" th:action="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}" method="POST">
+            Удалить этого сотрудника? <input type="submit" th:value="Да" />
+        </form>
+    </div>
+    <div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+</body>
+</html>

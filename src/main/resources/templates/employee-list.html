@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Сотрудники</title>
+</head>
+<body>
+    <h2>Список сотрудников</h2>
+
+    <div>
+        <nobr>
+            <a th:href="@{/employees/add}">Добавить сотрудника</a> |
+            <a th:href="@{/}">Назад на главную</a>
+        </nobr>
+    </div>
+    <br/><br/>
+    <div>
+
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>ФИО</th>
+            <th>Дата рождения</th>
+            <th>Должность</th>
+            <th>Дата начала работы</th>
+            <th>Изменить</th>
+            <th>Список отпусков</th>
+        </tr>
+
+        <tr th:each="employee : ${employees}">
+            <td th:utext="${employee.employeeId}">Id</td>
+            <td th:herf="@{/employees/{employeeId}(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">ФИО</td>
+            <td th:utext="${employee.dateOfBirth}">Дата рождения</td>
+            <td th:utext="${employee.position}">Должность</td>
+            <td th:utext="${employee.startDate}">Дата начала работы</td>
+            <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}">Изменить</a></td>
+            <td><a th:href="@{/employees/{employeeId}/vacationsList(employeeId=${employee.employeeId})}">Список отпусков</a></td>
+        </tr>
+    </table>
+    </div>
+    <br/><br/>
+    <div>
+        <nobr>
+            <span th:if="${hasPrev}"><a th:href="@{/employees?page={prev}(prev=${prev})}">Предыдущая страница</a>&nbsp;&nbsp;&nbsp;</span>
+            <span th:if="${hasNext}"><a th:href="@{/employees?page={next}(next=${next})}">Следующая страница</a></span>
+        </nobr>
+    </div>
+</body>
+</html>

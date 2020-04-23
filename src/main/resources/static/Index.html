@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home page</title>
-</head>
-<body>
-        <a href="showEmployees">Show employees</a>
-</body>
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Главная страница</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <h1>Главная страница</h1>
+        <div>
+                <a th:href="/employees">Список сотрудников</a>
+        </div>
+    </body>
+    <br/><br/>
+    <div>Тестовое задание выполнил Подолинский Фёдор</div>
 </html>

@@ -46,6 +46,14 @@ public class Employee {
         return employeeId;
     }
 
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public void setVacations(Set<Vacation> vacations) {
+        this.vacations = vacations;
+    }
+
     public Set<Vacation> getVacations() {
         return vacations;
     }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>th:text="${add} ? 'Create a Contact' : 'Edit a Contact'"</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1 th:text="${add} ? 'Создание сотрудника:' : 'Изменение сотрудника:'"></h1>
+<a th:href="@{/employees}">Назад к списку сотрудников</a>
+<br/><br/>
+<form th:action="${add} ? @{/employees/add} : @{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}"
+      th:object="${employee}" method="POST">
+    <table border="0">
+        <tr th:if="${employee.employeeId}">
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${employee.employeeId}">...</td>
+        </tr>
+        <tr>
+            <td>ФИО</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{fullName}" size="50" /></td>
+        </tr>
+        <tr>
+            <td>Дата рождения</td>
+            <td>:</td>
+            <td><input type="date" th:field="*{dateOfBirth}" /></td>
+        </tr>
+        <tr>
+            <td>Должность</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{position}" /></td>
+        </tr>
+        <tr>
+            <td>Дата начала работы</td>
+            <td>:</td>
+            <td><input type="date" th:field="*{startDate}" /></td>
+        </tr>
+        <tr>
+            <td>Логин</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{login}" /></td>
+        </tr>
+        <tr>
+            <td>Пароль</td>
+            <td>:</td>
+            <td><input type="password" th:field="*{password}" /></td>
+        </tr>
+    </table>
+    <input type="submit" th:value="${add} ? 'Создать' : 'Обновить'" />
+</form>
+
+<br/>
+<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+</body>
+</html>
