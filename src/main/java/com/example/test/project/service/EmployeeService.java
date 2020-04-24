@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface EmployeeService {
 
+    public boolean existsById(Long aLong);
+
     List<Employee> findAll(int pageNumber, int rowPerPage);
 
     Employee findById(Long employeeId) throws ResourceNotFoundException;

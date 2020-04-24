@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>th:text="${add} ? 'Создание отпуска' : 'Изменение отпуска'"</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1 th:text="${add} ? 'Создание отпуска:' : 'Изменение отпуска:'"></h1>
+<a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}">Назад к отпускам сотрудника</a>
+<br/><br/>
+<form th:action="${add} ? @{/employees/{employeeId}/addVacation/(employeeId=${employee.employeeId})} : @{/employees/{employeeId}/editVacation/{vacationId}/(employeeId=${employee.employeeId},vacationId=${vacation.vacationId})"
+      th:object="${vacation}" method="POST">
+    <table border="0">
+        <tr th:if="${vacation.vacationId}">
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${vacation.vacationId}">...</td>
+        </tr>
+        <tr>
+            <td>Дата начала</td>
+            <td>:</td>
+            <td><input type="date" th:field="*{vacationStartDate}" size="50" /></td>
+        </tr>
+        <tr>
+            <td>Дата окончания</td>
+            <td>:</td>
+            <td><input type="date" th:field="*{vacationEndDate}"  /></td>
+        </tr>
+    </table>
+    <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'" />
+</form>
+<br/>
+<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+</body>
+</html>

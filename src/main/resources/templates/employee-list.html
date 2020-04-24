@@ -19,7 +19,7 @@
 
     <table>
         <tr>
-            <th>Id</th>
+            <th>ID</th>
             <th>ФИО</th>
             <th>Дата рождения</th>
             <th>Должность</th>
@@ -28,13 +28,13 @@
             <th> </th>
         </tr>
         <tr th:each="employee : ${employees}">
-            <td th:utext="${employee.employeeId}">Id</td>
-            <td><a th:href="@{/employees/{employeeId}/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
-            <td th:utext="${employee.dateOfBirth}">Дата рождения</td>
-            <td th:utext="${employee.position}">Должность</td>
-            <td th:utext="${employee.startDate}">Дата начала работы</td>
+            <td th:utext="${employee.employeeId}">...</td>
+            <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
+            <td th:utext="${employee.dateOfBirth}">...</td>
+            <td th:utext="${employee.position}">...</td>
+            <td th:utext="${employee.startDate}">...</td>
             <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}">Изменить</a></td>
-            <td><a th:href="@{/employees/{employeeId}/vacationsList(employeeId=${employee.employeeId})}">Список отпусков</a></td>
+            <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}">Удалить</a></td>
         </tr>
     </table>
     </div>

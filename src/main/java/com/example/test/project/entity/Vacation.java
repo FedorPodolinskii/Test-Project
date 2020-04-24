@@ -29,6 +29,10 @@ public class Vacation {
         this.employee = employee;
     }
 
+    public void setVacationId(Long vacationId) {
+        this.vacationId = vacationId;
+    }
+
     public Long getVacationId() {
         return vacationId;
     }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Отпуск</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>Отпуска сотрудника: </h1><h1 th:utext="${employee.fullName}"></h1>
+<br/><br/>
+<a th:href="@{/employees/{employeeId}/vacationList(employeeId=${employee.employeeId})}">Назад к списку отпусков сотрудника</a>
+<br/><br/>
+<div th:if="${vacation}">
+    <table border="0">
+        <tr>
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${vacation.vacationId}"></td>
+        </tr>
+        <tr>
+            <th>Дата начала</th>
+            <td>:</td>
+            <td th:utext="${vacation.vacationStartDate}"></td>
+        </tr>
+        <tr>
+            <th>Дата окончания</th>
+            <td>:</td>
+            <td th:utext="${vacation.vacationEndDate}">  </td>
+        </tr>
+    </table>
+    <br/><br/>
+    <div th:if="not ${allowDelete}">
+        <a th:href="@{/employees/{employeeId}/editVacation/{vacationId}/(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Изменить</a> |
+        <a th:href="@{/employees/{employeeId}/deleteVacation/{vacationId}/(employeeId=${employee.employeeId})}">Удалить</a>
+    </div>
+    <form th:if="${allowDelete}" th:action="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}" method="POST">
+        Удалить этого сотрудника? <input type="submit" th:value="Да" />
+    </form>
+</div>
+<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+</body>
+</html>

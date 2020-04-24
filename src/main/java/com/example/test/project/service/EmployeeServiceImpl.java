@@ -22,6 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.repository = repository;
     }
 
+    @Override
     public List<Employee> findAll(int pageNumber, int rowPerPage) {
         List<Employee> employees = new ArrayList<>();
         Pageable sortedByIdAsc = PageRequest.of(pageNumber - 1, rowPerPage,
@@ -30,7 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
-
+    @Override
     public void update(Employee employee) throws BadResourceException, ResourceNotFoundException {
         if (!StringUtils.isEmpty(employee.getFullName())) {
             if (!existsById(employee.getEmployeeId())) {
@@ -44,10 +45,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Override
     public boolean existsById(Long aLong) {
         return repository.existsById(aLong);
     }
 
+    @Override
     public Employee findById(Long employeeId) throws ResourceNotFoundException {
         Employee employee = repository.findById(employeeId).orElse(null);
         if (employee == null) {
@@ -55,15 +58,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else return employee;
     }
 
+    @Override
     public long count() {
         return repository.count();
     }
 
-    public void deleteById(Long employeeId) throws ResourceNotFoundException{
+    @Override
+    public void deleteById(Long employeeId) throws ResourceNotFoundException {
         if (!existsById(employeeId)) {
             throw new ResourceNotFoundException("Не удалось найти сотрудника с ID: " + employeeId);
-        }
-        else {
+        } else {
             repository.deleteById(employeeId);
         }
     }
@@ -76,8 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                         " уже существует");
             }
             return repository.save(employee);
-        }
-        else {
+        } else {
             BadResourceException exc = new BadResourceException("Не удалось создать сотрудника");
             exc.addErrorMessage("Информация заполнена неверно");
             throw exc;

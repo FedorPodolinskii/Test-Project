@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список отпусков</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <h2>Список всех отпусков</h2>
+    <div>
+            <a th:href="@{/}">Назад на главную</a>
+    </div>
+    <br/><br/>
+    <div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>ФИО сотрудника</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+            </tr>
+            <tr th:each="vacation : ${vacations}">
+                <td th:utext="${vacation.vacationId}">Id</td>
+                <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${vacation.employee.employeeId})}" th:utext="${vacation.employee.getFullName()}">...</a></td>
+                <td th:utext="${vacation.vacationStartDate}">...</td>
+                <td th:utext="${vacation.vacationEndDate}">...</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

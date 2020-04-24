@@ -26,7 +26,7 @@ public class Employee {
     @Column(name = "PASSWORD", unique = false, nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "EMPLOYEE_ID")
     private Set<Vacation> vacations;
 
