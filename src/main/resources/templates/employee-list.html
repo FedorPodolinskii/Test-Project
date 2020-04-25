@@ -2,48 +2,56 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Сотрудники</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-    <h2>Список сотрудников</h2>
-
-    <div>
-        <nobr>
-            <a th:href="@{/employees/add}">Добавить сотрудника</a> |
-            <a th:href="@{/}">Назад на главную</a>
-        </nobr>
-    </div>
-    <br/><br/>
-    <div>
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>ФИО</th>
-            <th>Дата рождения</th>
-            <th>Должность</th>
-            <th>Дата начала работы</th>
-            <th> </th>
-            <th> </th>
-        </tr>
-        <tr th:each="employee : ${employees}">
-            <td th:utext="${employee.employeeId}">...</td>
-            <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
-            <td th:utext="${employee.dateOfBirth}">...</td>
-            <td th:utext="${employee.position}">...</td>
-            <td th:utext="${employee.startDate}">...</td>
-            <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}">Изменить</a></td>
-            <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}">Удалить</a></td>
-        </tr>
-    </table>
-    </div>
-    <br/><br/>
-    <div>
-        <nobr>
-            <span th:if="${hasPrev}"><a th:href="@{/employees?page={prev}(prev=${prev})}">Предыдущая страница</a>&nbsp;&nbsp;&nbsp;</span>
-            <span th:if="${hasNext}"><a th:href="@{/employees?page={next}(next=${next})}">Следующая страница</a></span>
-        </nobr>
+    <div class="container">
+        <h2>Список сотрудников</h2>
+        <div>
+            <a href="/employees/add" class="btn btn-primary btn-sm" role="button">Добавить сотрудника</a>
+            <a href="/" class="btn btn-primary btn-sm" role="button">Назад на главную</a>
+        </div>
+        <br>
+        <table class="table table-bordered table-sm mt-3">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th onclick="sortMyTable()">ФИО</th>
+                <th onclick="sortMyTable()">Дата рождения</th>
+                <th onclick="sortMyTable()">Должность</th>
+                <th onclick="sortMyTable()"> Дата начала работы </th>
+                <th> </th>
+                <th> </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="employee : ${employees}">
+                <td th:utext="${employee.employeeId}">...</td>
+                <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
+                <td th:utext="${employee.dateOfBirth}">...</td>
+                <td th:utext="${employee.position}">...</td>
+                <td th:utext="${employee.startDate}">...</td>
+                <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}" class="btn btn-primary btn-sm" role="button">Изменить</a></td>
+                <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}" class="btn btn-danger btn-sm" role="button">Удалить</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex">
+            <div class="ml-auto">
+                <span th:if="${hasPrev}"><a th:href="@{/employees?page={prev}(prev=${prev})}" class="btn btn-primary btn-sm mr-1" role="button">Предыдущая страница</a></span>
+                <span th:if="${hasNext}"><a th:href="@{/employees?page={next}(next=${next})}" class="btn btn-primary btn-sm " role="button">Следующая страница</a></span>
+            </div>
+        </div>
     </div>
 </body>
 </html>
