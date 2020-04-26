@@ -21,22 +21,23 @@
         <a href="/employees/add" class="btn btn-primary btn-sm mx-2" role="button">Добавить сотрудника</a>
     </div>
     <div class="dropdown mr-auto">
-        <button id="RowsPerPage" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1" data-toggle="dropdown">
+        <button id="RowsPerPage" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1"
+                data-toggle="dropdown">
         </button>
-        <div  class="dropdown-menu">
+        <div class="dropdown-menu">
             <a id="dropdown10" class="dropdown-item active" onclick="setRows(10)">10</a>
             <a id="dropdown25" class="dropdown-item" onclick="setRows(25)">25</a>
             <a id="dropdown50" class="dropdown-item" onclick="setRows(50)">50</a>
         </div>
     </div>
-    <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-sm thead-light">
         <thead>
         <tr>
-            <th>ID</th>
-            <th onclick="sortMyTable()">ФИО</th>
-            <th onclick="sortMyTable()">Дата рождения</th>
-            <th onclick="sortMyTable()">Должность</th>
-            <th onclick="sortMyTable()"> Дата начала работы</th>
+            <th class="align-content-center" onclick="sortMyTable('employeeId')">ID</th>
+            <th class="align-content-center" onclick="sortMyTable('fullName')">ФИО</th>
+            <th class="align-content-center" onclick="sortMyTable('dateOfBirth')">Дата рождения</th>
+            <th class="align-content-center " onclick="sortMyTable('position')">Должность</th>
+            <th class="align-content-center" onclick="sortMyTable('startDate')"> Дата начала работы</th>
             <th></th>
             <th></th>
         </tr>
@@ -68,8 +69,8 @@
 <script type="text/javascript">
     let pageNumber = $(this).attr('pageNumber');
     let rowsPerPage = $(this).attr('rowsPerPage');
-    let prevPage = pageNumber-1;
-    let nextPage = pageNumber+1;
+    let prevPage = pageNumber - 1;
+    let nextPage = pageNumber + 1;
     let hasPrev = false;
     let hasNext = false;
     let ascending = true;
@@ -77,10 +78,17 @@
 
     $(document).ready(getEmployees);
 
+    function sortMyTable(column) {
+        ascending = !ascending;
+        sortByColumn = column;
+        pageNumber = 1;
+        getEmployeesPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
+    }
+
     function setRows(num) {
         rowsPerPage = num;
         pageNumber = 1;
-        getEmployeesPageNRows(pageNumber, rowsPerPage,ascending,sortByColumn);
+        getEmployeesPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
 
     }
 
@@ -90,9 +98,9 @@
             let employees = employeeListPageJson.employees;
             hasPrev = employeeListPageJson.hasPrev;
             hasNext = employeeListPageJson.hasNext;
-            prevPage = employeeListPageJson.pageNumber-1;
+            prevPage = employeeListPageJson.pageNumber - 1;
             pageNumber = employeeListPageJson.pageNumber;
-            nextPage = employeeListPageJson.pageNumber+1;
+            nextPage = employeeListPageJson.pageNumber + 1;
             rowsPerPage = employeeListPageJson.rowsPerPage;
             ascending = employeeListPageJson.ascending;
             sortByColumn = employeeListPageJson.sortByColumn;
@@ -105,7 +113,7 @@
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' + employees[i].fullName + '</td>');
+                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacationList">' + employees[i].fullName + '</a></td>');
                 tr.push('<td>' + employees[i].dateOfBirth + '</td>');
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>');
@@ -126,9 +134,9 @@
             let employees = employeeListPageJson.employees;
             hasPrev = employeeListPageJson.hasPrev;
             hasNext = employeeListPageJson.hasNext;
-            prevPage = employeeListPageJson.pageNumber-1;
+            prevPage = employeeListPageJson.pageNumber - 1;
             pageNumber = employeeListPageJson.pageNumber;
-            nextPage = employeeListPageJson.pageNumber+1;
+            nextPage = employeeListPageJson.pageNumber + 1;
             rowsPerPage = employeeListPageJson.rowsPerPage;
             ascending = employeeListPageJson.ascending;
             sortByColumn = employeeListPageJson.sortByColumn;
@@ -141,7 +149,7 @@
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' + employees[i].fullName + '</td>');
+                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacationList">' + employees[i].fullName + '</a></td>');
                 tr.push('<td>' + employees[i].dateOfBirth + '</td>');
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>');
@@ -155,12 +163,24 @@
         })
     }
 
+    function viewPageNavFiltered() {
+        let tr2 = [];
+        if (hasPrev) {
+            tr2.push('<span><a onclick="getEmployeesPageNRows(prevPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+        }
+        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>');
+        if (hasNext) {
+            tr2.push('<span><a onclick="getEmployeesPageNRows(nextPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+        }
+        $('#employee_pages').empty().append($(tr2.join('')));
+    }
+
     function viewPageNav() {
         let tr2 = [];
         if (hasPrev) {
             tr2.push('<span><a onclick="getEmployeesPageNRows(prevPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
         }
-        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">'+pageNumber+'</a></span>');
+        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>');
         if (hasNext) {
             tr2.push('<span><a onclick="getEmployeesPageNRows(nextPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
         }
