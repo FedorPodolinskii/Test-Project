@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,46 +12,191 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-
 </head>
 <body>
-    <div class="container">
-        <h2>Список сотрудников</h2>
-        <div>
-            <a href="/employees/add" class="btn btn-primary btn-sm" role="button">Добавить сотрудника</a>
-            <a href="/" class="btn btn-primary btn-sm" role="button">Назад на главную</a>
-        </div>
-        <br>
-        <table class="table table-bordered table-sm mt-3">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th onclick="sortMyTable()">ФИО</th>
-                <th onclick="sortMyTable()">Дата рождения</th>
-                <th onclick="sortMyTable()">Должность</th>
-                <th onclick="sortMyTable()"> Дата начала работы </th>
-                <th> </th>
-                <th> </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="employee : ${employees}">
-                <td th:utext="${employee.employeeId}">...</td>
-                <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}" th:utext="${employee.fullName}">...</a></td>
-                <td th:utext="${employee.dateOfBirth}">...</td>
-                <td th:utext="${employee.position}">...</td>
-                <td th:utext="${employee.startDate}">...</td>
-                <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}" class="btn btn-primary btn-sm" role="button">Изменить</a></td>
-                <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}" class="btn btn-danger btn-sm" role="button">Удалить</a></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="d-flex">
-            <div class="ml-auto">
-                <span th:if="${hasPrev}"><a th:href="@{/employees?page={prev}(prev=${prev})}" class="btn btn-primary btn-sm mr-1" role="button">Предыдущая страница</a></span>
-                <span th:if="${hasNext}"><a th:href="@{/employees?page={next}(next=${next})}" class="btn btn-primary btn-sm " role="button">Следующая страница</a></span>
-            </div>
+<div class="container">
+    <h2>Список сотрудников</h2>
+    <div class="mr-auto">
+        <a href="/" class="btn btn-primary btn-sm " role="button">Назад на главную</a>
+        <a href="/employees/add" class="btn btn-primary btn-sm mx-2" role="button">Добавить сотрудника</a>
+    </div>
+    <div class="dropdown mr-auto">
+        <button id="RowsPerPage" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1" data-toggle="dropdown">
+        </button>
+        <div  class="dropdown-menu">
+            <a id="dropdown10" class="dropdown-item active" onclick="setRows(10)">10</a>
+            <a id="dropdown25" class="dropdown-item" onclick="setRows(25)">25</a>
+            <a id="dropdown50" class="dropdown-item" onclick="setRows(50)">50</a>
         </div>
     </div>
+    <table class="table table-bordered table-sm">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th onclick="sortMyTable()">ФИО</th>
+            <th onclick="sortMyTable()">Дата рождения</th>
+            <th onclick="sortMyTable()">Должность</th>
+            <th onclick="sortMyTable()"> Дата начала работы</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <!--        <tbody>
+                <tr th:each="employee : ${employees}">
+                    <td th:utext="${employee.employeeId}">...</td>
+                    <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}"
+                           th:utext="${employee.fullName}">...</a></td>
+                    <td th:utext="${employee.dateOfBirth}">...</td>
+                    <td th:utext="${employee.position}">...</td>
+                    <td th:utext="${employee.startDate}">...</td>
+                    <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}"
+                           class="btn btn-primary btn-sm" role="button">Изменить</a></td>
+                    <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}"
+                           class="btn btn-danger btn-sm" role="button">Удалить</a></td>
+                </tr>
+                </tbody>-->
+        <tbody id="employee_table">
+        </tbody>
+    </table>
+    <div class="d-flex">
+        <div id="employee_pages" class="ml-auto">
+
+        </div>
+    </div>
+</div>
 </body>
+<script type="text/javascript">
+    let pageNumber = $(this).attr('pageNumber');
+    let rowsPerPage = $(this).attr('rowsPerPage');
+    let prevPage = pageNumber-1;
+    let nextPage = pageNumber+1;
+    let hasPrev = false;
+    let hasNext = false;
+    let ascending = true;
+    let sortByColumn;
+
+    $(document).ready(getEmployees);
+
+    function setRows(num) {
+        rowsPerPage = num;
+        pageNumber = 1;
+        getEmployeesPageNRows(pageNumber, rowsPerPage,ascending,sortByColumn);
+
+    }
+
+    function getEmployees() {
+        console.log("работал getEmployees");
+        $.getJSON('http://localhost:8080/employees', function (employeeListPageJson) {
+            let employees = employeeListPageJson.employees;
+            hasPrev = employeeListPageJson.hasPrev;
+            hasNext = employeeListPageJson.hasNext;
+            prevPage = employeeListPageJson.pageNumber-1;
+            pageNumber = employeeListPageJson.pageNumber;
+            nextPage = employeeListPageJson.pageNumber+1;
+            rowsPerPage = employeeListPageJson.rowsPerPage;
+            ascending = employeeListPageJson.ascending;
+            sortByColumn = employeeListPageJson.sortByColumn;
+            console.log(employeeListPageJson);
+
+
+            $('#RowsPerPage').empty().append(rowsPerPage);
+
+            let tr = [];
+            for (let i = 0; i < employees.length; i++) {
+                tr.push('<tr>');
+                tr.push('<td>' + employees[i].employeeId + '</td>');
+                tr.push('<td>' + employees[i].fullName + '</td>');
+                tr.push('<td>' + employees[i].dateOfBirth + '</td>');
+                tr.push('<td>' + employees[i].position + '</td>');
+                tr.push('<td>' + employees[i].startDate + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('</tr>');
+            }
+            $('#employee_table').empty().append($(tr.join('')));
+
+            viewPageNav();
+
+        })
+    }
+
+    function getEmployeesPageNRows(newPageNumber, newRowsPerPage, newAscending, newSortByColumn) {
+        console.log("работал getEmployeesPageNRows");
+        $.getJSON('http://localhost:8080/employees?page=' + newPageNumber + '&rowsPerPage=' + newRowsPerPage + '&ascending=' + newAscending + '&sortByColumn=' + newSortByColumn, function (employeeListPageJson) {
+            let employees = employeeListPageJson.employees;
+            hasPrev = employeeListPageJson.hasPrev;
+            hasNext = employeeListPageJson.hasNext;
+            prevPage = employeeListPageJson.pageNumber-1;
+            pageNumber = employeeListPageJson.pageNumber;
+            nextPage = employeeListPageJson.pageNumber+1;
+            rowsPerPage = employeeListPageJson.rowsPerPage;
+            ascending = employeeListPageJson.ascending;
+            sortByColumn = employeeListPageJson.sortByColumn;
+
+            console.log(employeeListPageJson);
+
+            $('#RowsPerPage').empty().append(rowsPerPage);
+
+            let tr = [];
+            for (let i = 0; i < employees.length; i++) {
+                tr.push('<tr>');
+                tr.push('<td>' + employees[i].employeeId + '</td>');
+                tr.push('<td>' + employees[i].fullName + '</td>');
+                tr.push('<td>' + employees[i].dateOfBirth + '</td>');
+                tr.push('<td>' + employees[i].position + '</td>');
+                tr.push('<td>' + employees[i].startDate + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('</tr>');
+            }
+            $('#employee_table').empty().append($(tr.join('')));
+
+            viewPageNav();
+        })
+    }
+
+    function viewPageNav() {
+        let tr2 = [];
+        if (hasPrev) {
+            tr2.push('<span><a onclick="getEmployeesPageNRows(prevPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+        }
+        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">'+pageNumber+'</a></span>');
+        if (hasNext) {
+            tr2.push('<span><a onclick="getEmployeesPageNRows(nextPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+        }
+        $('#employee_pages').empty().append($(tr2.join('')));
+    }
+
+
+    /*            let ourRequest = new XMLHttpRequest();
+                ourRequest.open('GET', 'http://localhost:8080/employeesPage', true);
+                ourRequest.onload = function () {
+                    let ourData = JSON.parse(ourRequest.responseText);
+                    renderHTML(ourData);
+                }
+                function renderHTML()*/
+
+
+    /*    $.document.onload = function(){
+            $.ajax({
+                url: 'http://localhost:8080/employeesPage',
+                type: 'GET',
+                dataType: JSON,
+                success: function (response) {
+                    let trHTML = '';
+                    $.each(response, function (i, item) {
+                        trHTML += '<tr><td>' + item.employeeId +
+                            '</td><td>' + item.fullName +
+                            '</td><td>' + item.dateOfBirth +
+                            '</td><td>' + item.position +
+                            '</td><td>' + item.startDate +
+                            '</td><td>' + '<a href="/employees/' + item.employeeId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' +
+                            '</td><td>' + '<a href="/employees/' + item.employeeId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' +
+                            '</td></tr>';
+                    });
+                    $('#employee_table').append(trHTML);
+                }
+            });
+        }*/
+</script>
 </html>

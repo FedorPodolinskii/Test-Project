@@ -3,10 +3,13 @@ package com.example.test.project.controller;
 import com.example.test.project.entity.Employee;
 import com.example.test.project.exception.BadResourceException;
 import com.example.test.project.exception.ResourceNotFoundException;
+import com.example.test.project.model.EmployeeListPage;
 import com.example.test.project.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,27 +18,34 @@ import java.util.List;
 
 @Controller
 public class EmployeeController {
-    @Autowired
-    EmployeeService service;
+    final EmployeeService service;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final int ROW_PER_PAGE = 5;
 
+    public EmployeeController(EmployeeService service) {
+        this.service = service;
+    }
+
+    @RequestMapping(value = "/employeeList", produces = {
+            MediaType.TEXT_HTML_VALUE},
+            method = RequestMethod.GET)
+    public String viewContacts() {
+        return "employee-list";
+    }
+
+    @ResponseBody
     @GetMapping(value = "/employees")
-    public String getEmployees(Model model,
-                               @RequestParam(value = "page", defaultValue = "1") int pageNumber) {
-        List<Employee> employees = service.findAll(pageNumber, ROW_PER_PAGE);
+    public ResponseEntity<EmployeeListPage> getEmployees(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                                                         @RequestParam(value = "rowsPerPage", defaultValue = "10") int rowsPerPage,
+                                                         @RequestParam(value = "ascending", defaultValue = "true") boolean ascending,
+                                                         @RequestParam(value = "sortByColumn", defaultValue = "employeeId") String sortByColumn) {
+        List<Employee> employees = service.findAll(pageNumber, rowsPerPage, ascending, sortByColumn);
 
         long count = service.count();
         boolean hasPrev = pageNumber > 1;
-        boolean hasNext = (pageNumber * ROW_PER_PAGE) < count;
-        model.addAttribute("employees", employees);
-        model.addAttribute("hasPrev", hasPrev);
-        model.addAttribute("prev", pageNumber - 1);
-        model.addAttribute("hasNext", hasNext);
-        model.addAttribute("next", pageNumber + 1);
-
-        return "employee-list";
+        boolean hasNext = (pageNumber * rowsPerPage) < count;
+        EmployeeListPage employeeListPage = new EmployeeListPage(hasPrev, hasNext, employees, pageNumber, rowsPerPage, ascending, sortByColumn);
+        return new ResponseEntity<>(employeeListPage, HttpStatus.OK);
     }
 
     @GetMapping(value = "/employees/{employeeId}")

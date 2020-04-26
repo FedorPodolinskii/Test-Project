@@ -11,9 +11,9 @@ public interface EmployeeService {
 
     public boolean existsById(Long aLong);
 
-    List<Employee> findAll(int pageNumber, int rowPerPage);
-
     Employee findById(Long employeeId) throws ResourceNotFoundException;
+
+    List<Employee> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn);
 
     void update(Employee employee) throws BadResourceException, ResourceNotFoundException;
 

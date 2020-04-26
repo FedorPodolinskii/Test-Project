@@ -1,5 +1,7 @@
 package com.example.test.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -26,7 +28,8 @@ public class Employee {
     @Column(name = "PASSWORD", unique = false, nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_ID")
     private Set<Vacation> vacations;
 
@@ -54,6 +57,7 @@ public class Employee {
         this.vacations = vacations;
     }
 
+    @JsonManagedReference
     public Set<Vacation> getVacations() {
         return vacations;
     }
