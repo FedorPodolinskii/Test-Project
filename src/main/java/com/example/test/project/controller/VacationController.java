@@ -33,13 +33,16 @@ public class VacationController {
 
     @ResponseBody
     @GetMapping(value = "/vacationsData")
-    public ResponseEntity<VacationListPage> getEmployees(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+    public ResponseEntity<VacationListPage> getVacations(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
                                                          @RequestParam(value = "rowsPerPage", defaultValue = "10") int rowsPerPage,
                                                          @RequestParam(value = "ascending", defaultValue = "true") boolean ascending,
                                                          @RequestParam(value = "sortByColumn", defaultValue = "vacationStartDate") String sortByColumn,
-                                                         @RequestParam(value = "filterWord", defaultValue = "") String filterWord) {
+                                                         @RequestParam(value = "filterWord", defaultValue = "") String filterWord,
+                                                         @RequestParam(value = "startFilterDate", defaultValue = "") String startFilterDate,
+                                                         @RequestParam(value = "endFilterDate", defaultValue = "") String endFilterDate
+    ) {
 
-        List<Vacation> vacations = vacationService.findAll(pageNumber, rowsPerPage, ascending, sortByColumn,filterWord);
+        List<Vacation> vacations = vacationService.findAll(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord,startFilterDate,endFilterDate);
 
         long count = vacationService.count();
         boolean hasPrev = pageNumber > 1;

@@ -5,11 +5,13 @@ import com.example.test.project.exception.BadResourceException;
 import com.example.test.project.exception.ResourceAlreadyExistsException;
 import com.example.test.project.exception.ResourceNotFoundException;
 import com.example.test.project.repository.VacationRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord) {
+    public List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord, String startFilterDate, String endFilterDate) {
         List<Vacation> vacations = new ArrayList<>();
         Pageable pageRequest;
         Sort sort;
@@ -37,11 +39,21 @@ public class VacationServiceImpl implements VacationService {
             sort = Sort.by(sortByColumn).descending();
         }
         pageRequest = PageRequest.of(pageNumber - 1, rowsPerPage, sort);
+
+        Page<Vacation> all = repository.findAll(pageRequest);
+
         if (!filterWord.isEmpty()) {
-            repository.findAll(pageRequest).filter(item->item.getEmployee().getFullName().toLowerCase().contains(filterWord)).forEach(vacations::add);
-        } else {
-            repository.findAll(pageRequest).forEach(vacations::add);
+            all.filter(item -> item.getEmployee().getFullName().toLowerCase().contains(filterWord)).forEach(vacations::add);
         }
+        if (!startFilterDate.isEmpty()) {
+            all.filter(item -> item.getVacationStartDate().isAfter(LocalDate.parse(startFilterDate))).forEach(vacations::add);
+        }
+        if (!endFilterDate.isEmpty()) {
+            all.filter(item -> item.getVacationEndDate().isBefore(LocalDate.parse(endFilterDate))).forEach(vacations::add);
+        }
+
+        all.forEach(vacations::add);
+
         return vacations;
     }
 

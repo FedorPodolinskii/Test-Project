@@ -23,5 +23,5 @@ public interface VacationService {
 
     Vacation save(Vacation vacation) throws BadResourceException, ResourceAlreadyExistsException;
 
-    List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord);
+    List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord, String startFilterDate, String endFilterDate);
 }
