@@ -1,31 +1,209 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Список отпусков</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h2>Список всех отпусков</h2>
-    <div>
-            <a th:href="@{/}">Назад на главную</a>
+<div class="container">
+    <h2>Список отпусков</h2>
+    <div class="mr-auto">
+        <a href="/" class="btn btn-primary btn-sm " role="button">Назад на главную</a>
     </div>
-    <br/><br/>
-    <div>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>ФИО сотрудника</th>
-                <th>Дата начала</th>
-                <th>Дата окончания</th>
-            </tr>
-            <tr th:each="vacation : ${vacations}">
-                <td th:utext="${vacation.vacationId}">Id</td>
-                <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${vacation.employee.employeeId})}" th:utext="${vacation.employee.getFullName()}">...</a></td>
-                <td th:utext="${vacation.vacationStartDate}">...</td>
-                <td th:utext="${vacation.vacationEndDate}">...</td>
-            </tr>
-        </table>
+    <input id="myInput" type="text" placeholder="Имя сотрудника..">
+    <div class="dropdown mr-auto">
+        <button id="RowsPerPage" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1"
+                data-toggle="dropdown">
+        </button>
+        <div class="dropdown-menu">
+            <a id="dropdown10" class="dropdown-item active" onclick="setRows(10)">10</a>
+            <a id="dropdown25" class="dropdown-item" onclick="setRows(25)">25</a>
+            <a id="dropdown50" class="dropdown-item" onclick="setRows(50)">50</a>
+        </div>
     </div>
+    <table class="table table-bordered table-sm thead-light">
+        <thead>
+        <tr>
+            <th class="align-content-center" onclick="sortMyTable('vacationId')">ID</th>
+            <th class="align-content-center" onclick="sortMyTable('employee.fullName')">ФИО сотрудника</th>
+            <th class="align-content-center" onclick="sortMyTable('vacationStartDate')">Дата начала</th>
+            <th class="align-content-center" onclick="sortMyTable('vacationEndDate')">Дата окончания</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="vacation_table">
+        </tbody>
+    </table>
+    <div class="d-flex">
+        <div id="vacation_pages" class="ml-auto">
+
+        </div>
+    </div>
+</div>
 </body>
+<script type="text/javascript">
+    let pageNumber = $(this).attr('pageNumber');
+    let rowsPerPage = $(this).attr('rowsPerPage');
+    let prevPage = pageNumber - 1;
+    let nextPage = pageNumber + 1;
+    let hasPrev = false;
+    let hasNext = false;
+    let ascending = true;
+    let sortByColumn;
+    let filterWord;
+
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            let filterWord = $(this).val().toLowerCase();
+            pageNumber = 1;
+            getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord)
+        });
+    });
+
+    function getVacationsPageNRowsFiltered(newPageNumber, newRowsPerPage, newAscending, newSortByColumn, filterWord) {
+        console.log("работал getEmployeesPageNRows");
+        if (filterWord.length !== 0) {
+            $.getJSON('http://localhost:8080/vacationsData?page=' + newPageNumber + '&rowsPerPage=' + newRowsPerPage + '&ascending=' + newAscending + '&sortByColumn=' + newSortByColumn + '&filterWord=' + filterWord, function (vacationListPageJson) {
+                let vacations = vacationListPageJson.vacations;
+                hasPrev = vacationListPageJson.hasPrev;
+                hasNext = vacationListPageJson.hasNext;
+                prevPage = vacationListPageJson.pageNumber - 1;
+                pageNumber = vacationListPageJson.pageNumber;
+                nextPage = vacationListPageJson.pageNumber + 1;
+                rowsPerPage = vacationListPageJson.rowsPerPage;
+                ascending = vacationListPageJson.ascending;
+                sortByColumn = vacationListPageJson.sortByColumn;
+
+                console.log(vacationListPageJson);
+
+                $('#RowsPerPage').empty().append(rowsPerPage);
+
+                let tr = [];
+                for (let i = 0; i < vacations.length; i++) {
+                    tr.push('<tr>');
+                    tr.push('<td>' + vacations[i].vacationId + '</td>');
+                    tr.push('<td>' + vacations[i].employee.fullName + '</td>');
+                    tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
+                    tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
+                    tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                    tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                    tr.push('</tr>');
+                }
+                $('#vacation_table').empty().append($(tr.join('')));
+            })
+        } else {
+            getVacationsPageNRows(newPageNumber, newRowsPerPage, newAscending, newSortByColumn);
+        }
+        viewPageNav();
+    }
+
+    $(document).ready(getVacations);
+
+    function sortMyTable(column) {
+        ascending = !ascending;
+        sortByColumn = column;
+        pageNumber = 1;
+        getVacationsPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
+    }
+
+    function setRows(num) {
+        rowsPerPage = num;
+        pageNumber = 1;
+        getVacationsPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
+
+    }
+
+    function getVacations() {
+        console.log("работал getVacations");
+        $.getJSON('http://localhost:8080/vacationsData', function (vacationListPageJson) {
+            let vacations = vacationListPageJson.vacations;
+            hasPrev = vacationListPageJson.hasPrev;
+            hasNext = vacationListPageJson.hasNext;
+            prevPage = vacationListPageJson.pageNumber - 1;
+            pageNumber = vacationListPageJson.pageNumber;
+            nextPage = vacationListPageJson.pageNumber + 1;
+            rowsPerPage = vacationListPageJson.rowsPerPage;
+            ascending = vacationListPageJson.ascending;
+            sortByColumn = vacationListPageJson.sortByColumn;
+            console.log(vacationListPageJson);
+
+
+            $('#RowsPerPage').empty().append(rowsPerPage);
+
+            let tr = [];
+            for (let i = 0; i < vacations.length; i++) {
+                tr.push('<tr>');
+                tr.push('<td>' + vacations[i].vacationId + '</td>');
+                tr.push('<td>' + vacations[i].employee.fullName + '</td>');
+                tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
+                tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
+                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('</tr>');
+            }
+            $('#vacation_table').empty().append($(tr.join('')));
+
+            viewPageNav();
+
+        })
+    }
+
+    function getVacationsPageNRows(newPageNumber, newRowsPerPage, newAscending, newSortByColumn) {
+        console.log("работал getEmployeesPageNRows");
+        $.getJSON('http://localhost:8080/vacationsData?page=' + newPageNumber + '&rowsPerPage=' + newRowsPerPage + '&ascending=' + newAscending + '&sortByColumn=' + newSortByColumn, function (vacationListPageJson) {
+            let vacations = vacationListPageJson.vacations;
+            hasPrev = vacationListPageJson.hasPrev;
+            hasNext = vacationListPageJson.hasNext;
+            prevPage = vacationListPageJson.pageNumber - 1;
+            pageNumber = vacationListPageJson.pageNumber;
+            nextPage = vacationListPageJson.pageNumber + 1;
+            rowsPerPage = vacationListPageJson.rowsPerPage;
+            ascending = vacationListPageJson.ascending;
+            sortByColumn = vacationListPageJson.sortByColumn;
+
+            console.log(vacationListPageJson);
+
+            $('#RowsPerPage').empty().append(rowsPerPage);
+
+            let tr = [];
+            for (let i = 0; i < vacations.length; i++) {
+                tr.push('<tr>');
+                tr.push('<td>' + vacations[i].vacationId + '</td>');
+                tr.push('<td>' + vacations[i].employee.fullName + '</td>');
+                tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
+                tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
+                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('</tr>');
+            }
+            $('#vacation_table').empty().append($(tr.join('')));
+
+            viewPageNav();
+        })
+    }
+
+    function viewPageNav() {
+        let tr2 = [];
+        if (hasPrev) {
+            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(prevPage,rowsPerPage,ascending,sortByColumn,filterWord)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+        }
+        if (hasPrev || hasNext) {
+            tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>')
+        }
+        if (hasNext) {
+            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(nextPage,rowsPerPage,ascending,sortByColumn,filterWord)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+        }
+        $('#vacation_pages').empty().append($(tr2.join('')));
+    }
+</script>
 </html>

@@ -1,7 +1,5 @@
 package com.example.test.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -18,9 +16,7 @@ public class Vacation {
     private LocalDate vacationStartDate;
     @Column(name = "END_DATE", unique = false, nullable = false)
     private LocalDate vacationEndDate;
-
-
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     private Employee employee;
 
     public Vacation() {
@@ -56,7 +52,6 @@ public class Vacation {
         this.vacationEndDate = vacationEndDate;
     }
 
-    @JsonBackReference
     public Employee getEmployee() {
         return employee;
     }

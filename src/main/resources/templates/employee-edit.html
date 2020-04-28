@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>th:text="${add} ? 'Create a Contact' : 'Edit a Contact'"</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
 <h1 th:text="${add} ? 'Создание сотрудника:' : 'Изменение сотрудника:'"></h1>
-<a th:href="@{/employees}">Назад к списку сотрудников</a>
+<a th:href="@{/employeeList}">Назад к списку сотрудников</a>
 <br/><br/>
 <form th:action="${add} ? @{/employees/add} : @{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}"
       th:object="${employee}" method="POST">

@@ -1,6 +1,7 @@
 package com.example.test.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,19 +19,19 @@ public class Employee {
     @Column(name = "FULL_NAME", unique = false, nullable = false)
     private String fullName;
     @Column(name = "BIRTH_DATE", unique = false, nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     @Column(name = "POSITION", unique = false, nullable = false)
     private String position;
     @Column(name = "START_DATE", unique = false, nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @Column(name = "LOGIN", unique = true, nullable = false)
     private String login;
     @Column(name = "PASSWORD", unique = false, nullable = false)
     private String password;
-
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID")
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Vacation> vacations;
 
     public Employee() {
@@ -57,7 +58,6 @@ public class Employee {
         this.vacations = vacations;
     }
 
-    @JsonManagedReference
     public Set<Vacation> getVacations() {
         return vacations;
     }

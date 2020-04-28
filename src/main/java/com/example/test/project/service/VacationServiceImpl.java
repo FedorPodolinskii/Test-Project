@@ -27,16 +27,26 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
-    public List<Vacation> findAll(int pageNumber, int rowPerPage) {
+    public List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord) {
         List<Vacation> vacations = new ArrayList<>();
-        Pageable sortedByIdAsc = PageRequest.of(pageNumber - 1, rowPerPage,
-                Sort.by("vacationStartDate").ascending());
-        repository.findAll(sortedByIdAsc).forEach(vacations::add);
+        Pageable pageRequest;
+        Sort sort;
+        if (ascending) {
+            sort = Sort.by(sortByColumn).ascending();
+        } else {
+            sort = Sort.by(sortByColumn).descending();
+        }
+        pageRequest = PageRequest.of(pageNumber - 1, rowsPerPage, sort);
+        if (!filterWord.isEmpty()) {
+            repository.findAll(pageRequest).filter(item->item.getEmployee().getFullName().toLowerCase().contains(filterWord)).forEach(vacations::add);
+        } else {
+            repository.findAll(pageRequest).forEach(vacations::add);
+        }
         return vacations;
     }
 
     @Override
-    public List<Vacation> findAllByEmployeeId(Long employeeId) throws ResourceNotFoundException{
+    public List<Vacation> findAllByEmployeeId(Long employeeId) throws ResourceNotFoundException {
         List<Vacation> vacations = null;
         vacations = repository.findAllByEmployee_EmployeeId(employeeId);
         if (vacations == null) {

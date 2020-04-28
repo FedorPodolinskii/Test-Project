@@ -22,16 +22,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.repository = repository;
     }
 
-    //TODO get rid of this
-/*    @Override
-    public List<Employee> findAll(int pageNumber, int rowPerPage) {
-        List<Employee> employees = new ArrayList<>();
-        Pageable sortedByIdAsc = PageRequest.of(pageNumber - 1, rowPerPage,
-                Sort.by("employeeId").ascending());
-        repository.findAll(sortedByIdAsc).forEach(employees::add);
-        return employees;
-    }*/
-
     @Override
     public List<Employee> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn) {
         List<Employee> employees = new ArrayList<>();

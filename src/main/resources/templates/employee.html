@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Сотрудник</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
     <h1>Сотрудник</h1>
-    <a th:href="@{/employees}">Назад к списку сотрудников</a>
+    <a th:href="@{/employeeList}">Назад к списку сотрудников</a>
     <br/><br/>
     <div th:if="${employee}">
         <table border="0">

@@ -34,7 +34,7 @@
         <thead>
         <tr>
             <th class="align-content-center" onclick="sortMyTable('employeeId')">ID</th>
-            <th class="align-content-center" onclick="sortMyTable('fullName')">ФИО</th>
+            <th class="align-content-center" onclick="sortMyTable('fullName')">ФИО сотрудника</th>
             <th class="align-content-center" onclick="sortMyTable('dateOfBirth')">Дата рождения</th>
             <th class="align-content-center " onclick="sortMyTable('position')">Должность</th>
             <th class="align-content-center" onclick="sortMyTable('startDate')"> Дата начала работы</th>
@@ -42,20 +42,6 @@
             <th></th>
         </tr>
         </thead>
-        <!--        <tbody>
-                <tr th:each="employee : ${employees}">
-                    <td th:utext="${employee.employeeId}">...</td>
-                    <td><a th:href="@{/employees/{employeeId}/vacationList/(employeeId=${employee.employeeId})}"
-                           th:utext="${employee.fullName}">...</a></td>
-                    <td th:utext="${employee.dateOfBirth}">...</td>
-                    <td th:utext="${employee.position}">...</td>
-                    <td th:utext="${employee.startDate}">...</td>
-                    <td><a th:href="@{/employees/{employeeId}/edit(employeeId=${employee.employeeId})}"
-                           class="btn btn-primary btn-sm" role="button">Изменить</a></td>
-                    <td><a th:href="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId})}"
-                           class="btn btn-danger btn-sm" role="button">Удалить</a></td>
-                </tr>
-                </tbody>-->
         <tbody id="employee_table">
         </tbody>
     </table>
@@ -113,7 +99,7 @@
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacationList">' + employees[i].fullName + '</a></td>');
+                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacations">' + employees[i].fullName + '</a></td>');
                 tr.push('<td>' + employees[i].dateOfBirth + '</td>');
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>');
@@ -149,7 +135,7 @@
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacationList">' + employees[i].fullName + '</a></td>');
+                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacations">' + employees[i].fullName + '</a></td>');
                 tr.push('<td>' + employees[i].dateOfBirth + '</td>');
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Отпуск</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
 <h1>Отпуска сотрудника: </h1><h1 th:utext="${employee.fullName}"></h1>
@@ -31,10 +31,10 @@
     <br/><br/>
     <div th:if="not ${allowDelete}">
         <a th:href="@{/employees/{employeeId}/editVacation/{vacationId}/(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Изменить</a> |
-        <a th:href="@{/employees/{employeeId}/deleteVacation/{vacationId}/(employeeId=${employee.employeeId})}">Удалить</a>
+        <a th:href="@{/employees/{employeeId}/deleteVacation/{vacationId}/(eemployeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Удалить</a>
     </div>
-    <form th:if="${allowDelete}" th:action="@{/employees/{employeeId}/delete(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}" method="POST">
-        Удалить этого сотрудника? <input type="submit" th:value="Да" />
+    <form th:if="${allowDelete}" th:action="@{/employees/{employeeId}/deleteVacation/{vacationId}/(eemployeeId=${employee.employeeId}vacationId=${vacation.vacationId})}" method="POST">
+        Удалить этот отпуск? <input type="submit" th:value="Да" />
     </form>
 </div>
 <div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>

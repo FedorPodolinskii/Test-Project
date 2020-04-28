@@ -29,7 +29,7 @@ public class EmployeeController {
     @RequestMapping(value = "/employeeList", produces = {
             MediaType.TEXT_HTML_VALUE},
             method = RequestMethod.GET)
-    public String viewContacts() {
+    public String viewEmployees() {
         return "employee-list";
     }
 
@@ -140,7 +140,7 @@ public class EmployeeController {
             Model model, @PathVariable long employeeId) {
         try {
             service.deleteById(employeeId);
-            return "redirect:/employees";
+            return "redirect:/employeeList";
         } catch (ResourceNotFoundException ex) {
             String errorMessage = ex.getMessage();
             logger.error(errorMessage);
