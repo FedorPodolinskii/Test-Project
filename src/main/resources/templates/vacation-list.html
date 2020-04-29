@@ -83,7 +83,7 @@
     });
 
     $(document).ready(function () {
-        $("#filterInput").on("keyup", function () {  //TODO beBouncer
+        $("#filterInput").on("keyup", function () {
             filterWord = $(this).val().toLowerCase();
             pageNumber = 1;
             console.log("input filterWord=" + filterWord)
@@ -126,8 +126,8 @@
                 tr.push('<tr>');
                 tr.push('<td>' + vacations[i].vacationId + '</td>');
                 tr.push('<td>' + vacations[i].employee.fullName + '</td>');
-                tr.push('<td>' + vacations[i].vacationStartDate + '</td>'); //TODO format date
-                tr.push('<td>' + vacations[i].vacationEndDate + '</td>'); //TODO format date
+                tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
+                tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
                 tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/editVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
                 tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/deleteVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');
@@ -179,8 +179,8 @@
                 tr.push('<tr>');
                 tr.push('<td>' + vacations[i].vacationId + '</td>');
                 tr.push('<td>' + vacations[i].employee.fullName + '</td>');
-                tr.push('<td>' + vacations[i].vacationStartDate + '</td>'); //TODO format date
-                tr.push('<td>' + vacations[i].vacationEndDate + '</td>'); //TODO format date
+                tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
+                tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
                 tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/editVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
                 tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/deleteVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');

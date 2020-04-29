@@ -20,35 +20,40 @@
         <tr>
             <td>ФИО</td>
             <td>:</td>
-            <td><input type="text" th:field="*{fullName}" size="50" /></td>
+            <td><input type="text" th:field="*{fullName}" size="50" min="3" max="70" required></td>
         </tr>
         <tr>
             <td>Дата рождения</td>
             <td>:</td>
-            <td><input type="date" th:field="*{dateOfBirth}"  /></td>
+            <td><input type="date" th:field="*{dateOfBirth}" required></td>
         </tr>
         <tr>
             <td>Должность</td>
             <td>:</td>
-            <td><input type="text" th:field="*{position}" /></td>
+            <td><input type="text" th:field="*{position}" min="3" max="50" required></td>
         </tr>
         <tr>
             <td>Дата начала работы</td>
             <td>:</td>
-            <td><input type="date" th:field="*{startDate}" /></td>
+            <td><input type="date" th:field="*{startDate}" required></td>
         </tr>
         <tr>
             <td>Логин</td>
             <td>:</td>
-            <td><input type="text" th:field="*{login}" /></td>
+            <td><input type="text" th:field="*{login}" min="3" max="50" required></td>
         </tr>
-        <tr>
+        <tr th:if="${employee.employeeId}">
             <td>Пароль</td>
             <td>:</td>
             <td><input type="password" th:field="*{password}" /></td>
         </tr>
+        <tr th:unless="${employee.employeeId}">
+            <td>Пароль</td>
+            <td>:</td>
+            <td><input type="password" th:field="*{password}" required></td>
+        </tr>
     </table>
-    <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'" />
+    <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'"/>
 </form>
 
 <br/>

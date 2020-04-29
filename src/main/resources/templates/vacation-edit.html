@@ -20,12 +20,12 @@
         <tr>
             <td>Дата начала</td>
             <td>:</td>
-            <td><input class="form-control" type="date" th:field="*{vacationStartDate}" size="50" /></td>
+            <td><input class="form-control" type="date" th:field="*{vacationStartDate}" size="50" required></td>
         </tr>
         <tr>
             <td>Дата окончания</td>
             <td>:</td>
-            <td><input class="form-control" type="date" th:field="*{vacationEndDate}"  /></td>
+            <td><input class="form-control" type="date" th:field="*{vacationEndDate}"  required></td>
         </tr>
     </table>
     <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'" />

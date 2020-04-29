@@ -56,7 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (!existsById(employee.getEmployeeId())) {
                 throw new ResourceNotFoundException("Не удалось найти сотрудника с ID: " + employee.getEmployeeId());
             }
-            if(!employee.getPassword().isEmpty()){
+            if (!employee.getPassword().isEmpty()) {
                 String encPass = encoder.encode(employee.getPassword());
                 employee.setPassword(encPass);
             } else {
@@ -104,6 +104,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 throw new ResourceAlreadyExistsException("Сотрудник с ID: " + employee.getEmployeeId() +
                         " уже существует");
             }
+            if (!StringUtils.isEmpty(employee.getPassword())) {
+                BadResourceException exc = new BadResourceException("Пароль не может быть пустым");
+                exc.addErrorMessage("Информация заполнена неверно");
+                throw exc;
+            }
+
             String encPass = encoder.encode(employee.getPassword());
             employee.setPassword(encPass);
             return repository.save(employee);
