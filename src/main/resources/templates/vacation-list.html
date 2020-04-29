@@ -58,8 +58,8 @@
 </div>
 </body>
 <script type="text/javascript">
-    let pageNumber;
-    let rowsPerPage;
+    let pageNumber = 1;
+    let rowsPerPage = 10;
     let prevPage = pageNumber - 1;
     let nextPage = pageNumber + 1;
     let hasPrev = false;
@@ -72,13 +72,13 @@
 
     $('#dateFilterStart').on('input', function () {
         startFilterDate = $('#dateFilterStart').val();
-        console.log("new startFilterDate " + startFilterDate)
+        console.log("input startFilterDate=" + startFilterDate)
         getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
     });
 
     $('#dateFilterEnd').on('input', function () {
         endFilterDate = $('#dateFilterEnd').val();
-        console.log("new endFilterDate " + endFilterDate)
+        console.log("input endFilterDate=" + endFilterDate)
         getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
     });
 
@@ -86,17 +86,18 @@
         $("#myInput").on("keyup", function () {  //TODO beBouncer
             filterWord = $(this).val().toLowerCase();
             pageNumber = 1;
+            console.log("input filterWord=" + filterWord)
             getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
         });
     });
 
-    function getVacationsPageNRowsFiltered(newPageNumber, newRowsPerPage, newAscending, newSortByColumn, filterWord, newStartFilterDate, newEndFilterDate) {
+    function getVacationsPageNRowsFiltered(newPageNumber, newRowsPerPage, newAscending, newSortByColumn, newfilterWord, newStartFilterDate, newEndFilterDate) {
         console.log("сработал getEmployeesPageNRows");
-        let filterWordAttr = filterWord.length !== 0 ? '&filterWord=' + filterWord : '';
+        let filterWordAttr = newfilterWord.length !== 0 ? '&filterWord=' + newfilterWord : '';
         console.log("filterWordAttr = " + filterWordAttr);
-        let filterDateStartAttr = filterWord.length !== 0? '&startFilterDate=' + newStartFilterDate : '';
+        let filterDateStartAttr = newStartFilterDate.length !== 0 ? '&startFilterDate=' + newStartFilterDate : '';
         console.log("filterDateStartAttr = " + filterDateStartAttr);
-        let filterDateEndAttr = filterWord.length !== 0? '&endFilterDate=' + newEndFilterDate : '';
+        let filterDateEndAttr = newEndFilterDate.length !== 0 ? '&endFilterDate=' + newEndFilterDate : '';
         console.log("filterDateEndAttr = " + filterDateEndAttr);
 
         $.getJSON('http://localhost:8080/vacationsData?page=' + newPageNumber +
@@ -127,29 +128,32 @@
                 tr.push('<td>' + vacations[i].employee.fullName + '</td>');
                 tr.push('<td>' + vacations[i].vacationStartDate + '</td>'); //TODO format date
                 tr.push('<td>' + vacations[i].vacationEndDate + '</td>'); //TODO format date
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/editVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/deleteVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');
             }
             $('#vacation_table').empty().append($(tr.join('')));
+            viewPageNav();
         })
-
-        viewPageNav();
     }
 
     $(document).ready(getVacations);
 
     function sortMyTable(column) {
-        ascending = !ascending;
-        sortByColumn = column;
+        if(sortByColumn===column) {
+            ascending = !ascending;
+        } else {
+            sortByColumn = column;
+            ascending = true;
+        }
         pageNumber = 1;
-        getVacationsPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
+        getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
     }
 
     function setRows(num) {
         rowsPerPage = num;
         pageNumber = 1;
-        getVacationsPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
+        getVacationsPageNRowsFiltered(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
 
     }
 
@@ -177,61 +181,28 @@
                 tr.push('<td>' + vacations[i].employee.fullName + '</td>');
                 tr.push('<td>' + vacations[i].vacationStartDate + '</td>'); //TODO format date
                 tr.push('<td>' + vacations[i].vacationEndDate + '</td>'); //TODO format date
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/editVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
+                tr.push('<td>' + '<a href="/employees/' + vacations[i].employee.employeeId + '/deleteVacation/' + vacations[i].vacationId + '"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');
             }
             $('#vacation_table').empty().append($(tr.join('')));
-
-            viewPageNav();
-
-        })
-    }
-
-    function getVacationsPageNRows(newPageNumber, newRowsPerPage, newAscending, newSortByColumn) {
-        console.log("работал getEmployeesPageNRows");
-        $.getJSON('http://localhost:8080/vacationsData?page=' + newPageNumber + '&rowsPerPage=' + newRowsPerPage + '&ascending=' + newAscending + '&sortByColumn=' + newSortByColumn, function (vacationListPageJson) {
-            let vacations = vacationListPageJson.vacations;
-            hasPrev = vacationListPageJson.hasPrev;
-            hasNext = vacationListPageJson.hasNext;
-            prevPage = vacationListPageJson.pageNumber - 1;
-            pageNumber = vacationListPageJson.pageNumber;
-            nextPage = vacationListPageJson.pageNumber + 1;
-            rowsPerPage = vacationListPageJson.rowsPerPage;
-            ascending = vacationListPageJson.ascending;
-            sortByColumn = vacationListPageJson.sortByColumn;
-
-            console.log(vacationListPageJson);
-
-            $('#RowsPerPage').empty().append(rowsPerPage);
-
-            let tr = [];
-            for (let i = 0; i < vacations.length; i++) {
-                tr.push('<tr>');
-                tr.push('<td>' + vacations[i].vacationId + '</td>');
-                tr.push('<td>' + vacations[i].employee.fullName + '</td>');
-                tr.push('<td>' + vacations[i].vacationStartDate + '</td>');
-                tr.push('<td>' + vacations[i].vacationEndDate + '</td>');
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
-                tr.push('<td>' + '<a href="/vacations/' + vacations[i].vacationId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
-                tr.push('</tr>');
-            }
-            $('#vacation_table').empty().append($(tr.join('')));
-
             viewPageNav();
         })
     }
+
 
     function viewPageNav() {
         let tr2 = [];
         if (hasPrev) {
-            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(prevPage,rowsPerPage,ascending,sortByColumn,filterWord)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(prevPage,rowsPerPage,ascending,sortByColumn,filterWord, startFilterDate, endFilterDate)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+        } else {
+            tr2.push('<span><a class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
         }
-        if (hasPrev || hasNext) {
-            tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>')
-        }
+        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>')
         if (hasNext) {
-            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(nextPage,rowsPerPage,ascending,sortByColumn,filterWord)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+            tr2.push('<span><a onclick="getVacationsPageNRowsFiltered(nextPage,rowsPerPage,ascending,sortByColumn,filterWord, startFilterDate, endFilterDate)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+        } else {
+            tr2.push('<span><a class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
         }
         $('#vacation_pages').empty().append($(tr2.join('')));
     }

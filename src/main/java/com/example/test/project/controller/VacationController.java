@@ -24,7 +24,6 @@ public class VacationController {
     final VacationService vacationService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final int ROW_PER_PAGE = 10;
 
     public VacationController(EmployeeService employeeService, VacationService vacationService) {
         this.employeeService = employeeService;
@@ -100,7 +99,7 @@ public class VacationController {
 
         try {
             Vacation newVacation = vacationService.save(vacation);
-            return "redirect:/employees/" + String.valueOf(employee.getEmployeeId()) + "/vacationList";
+            return "redirect:/employees/" + String.valueOf(employee.getEmployeeId()) + "/vacations";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.error(errorMessage);
@@ -138,13 +137,14 @@ public class VacationController {
     }
 
     @PostMapping(value = {"/employees/{employeeId}/editVacation/{vacationId}"})
-    public String updateEmployee(Model model,
+    public String updateVacation(Model model,
                                  @PathVariable Long employeeId, @PathVariable Long vacationId,
                                  @ModelAttribute Employee employee, @ModelAttribute Vacation vacation) {
         try {
             vacation.setVacationId(vacationId);
+            vacation.setEmployee(employee);
             vacationService.update(vacation);
-            return "redirect:/employees/" + String.valueOf(employeeId) + "/vacationList";
+            return "redirect:/employees/" + String.valueOf(employeeId) + "/vacations";
 
         } catch (BadResourceException | ResourceNotFoundException ex) {
             String errorMessage = ex.getMessage();
@@ -183,7 +183,7 @@ public class VacationController {
             Model model, @PathVariable long employeeId, @PathVariable long vacationId) {
         try {
             vacationService.deleteById(vacationId);
-            return "redirect:/employees/" + String.valueOf(employeeId) + "/vacationList";
+            return "redirect:/employees/" + String.valueOf(employeeId) + "/vacations";
         } catch (ResourceNotFoundException ex) {
             String errorMessage = ex.getMessage();
             logger.error(errorMessage);

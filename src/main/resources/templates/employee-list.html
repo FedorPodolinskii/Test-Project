@@ -53,8 +53,8 @@
 </div>
 </body>
 <script type="text/javascript">
-    let pageNumber = $(this).attr('pageNumber');
-    let rowsPerPage = $(this).attr('rowsPerPage');
+    let pageNumber = 1;
+    let rowsPerPage = 10;
     let prevPage = pageNumber - 1;
     let nextPage = pageNumber + 1;
     let hasPrev = false;
@@ -65,8 +65,12 @@
     $(document).ready(getEmployees);
 
     function sortMyTable(column) {
-        ascending = !ascending;
-        sortByColumn = column;
+        if(sortByColumn===column) {
+            ascending = !ascending;
+        } else {
+            sortByColumn = column;
+            ascending = true;
+        }
         pageNumber = 1;
         getEmployeesPageNRows(pageNumber, rowsPerPage, ascending, sortByColumn);
     }
@@ -79,7 +83,6 @@
     }
 
     function getEmployees() {
-        console.log("работал getEmployees");
         $.getJSON('http://localhost:8080/employees', function (employeeListPageJson) {
             let employees = employeeListPageJson.employees;
             hasPrev = employeeListPageJson.hasPrev;
@@ -92,9 +95,7 @@
             sortByColumn = employeeListPageJson.sortByColumn;
             console.log(employeeListPageJson);
 
-
             $('#RowsPerPage').empty().append(rowsPerPage);
-
             let tr = [];
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
@@ -108,14 +109,11 @@
                 tr.push('</tr>');
             }
             $('#employee_table').empty().append($(tr.join('')));
-
             viewPageNav();
-
         })
     }
 
     function getEmployeesPageNRows(newPageNumber, newRowsPerPage, newAscending, newSortByColumn) {
-        console.log("работал getEmployeesPageNRows");
         $.getJSON('http://localhost:8080/employees?page=' + newPageNumber + '&rowsPerPage=' + newRowsPerPage + '&ascending=' + newAscending + '&sortByColumn=' + newSortByColumn, function (employeeListPageJson) {
             let employees = employeeListPageJson.employees;
             hasPrev = employeeListPageJson.hasPrev;
@@ -126,11 +124,7 @@
             rowsPerPage = employeeListPageJson.rowsPerPage;
             ascending = employeeListPageJson.ascending;
             sortByColumn = employeeListPageJson.sortByColumn;
-
-            console.log(employeeListPageJson);
-
             $('#RowsPerPage').empty().append(rowsPerPage);
-
             let tr = [];
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
@@ -144,31 +138,22 @@
                 tr.push('</tr>');
             }
             $('#employee_table').empty().append($(tr.join('')));
-
             viewPageNav();
         })
-    }
-
-    function viewPageNavFiltered() {
-        let tr2 = [];
-        if (hasPrev) {
-            tr2.push('<span><a onclick="getEmployeesPageNRows(prevPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
-        }
-        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>');
-        if (hasNext) {
-            tr2.push('<span><a onclick="getEmployeesPageNRows(nextPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
-        }
-        $('#employee_pages').empty().append($(tr2.join('')));
     }
 
     function viewPageNav() {
         let tr2 = [];
         if (hasPrev) {
             tr2.push('<span><a onclick="getEmployeesPageNRows(prevPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
+        } else {
+            tr2.push('<span><a class="btn btn-primary btn-sm" role="button">Предыдущая страница</a></span>');
         }
-        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>');
+        tr2.push('<span><a class="btn btn-primary btn-sm mx-2" role="button">' + pageNumber + '</a></span>')
         if (hasNext) {
             tr2.push('<span><a onclick="getEmployeesPageNRows(nextPage,rowsPerPage,ascending,sortByColumn)" class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
+        } else {
+            tr2.push('<span><a class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
         }
         $('#employee_pages').empty().append($(tr2.join('')));
     }

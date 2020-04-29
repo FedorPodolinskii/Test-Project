@@ -1,5 +1,7 @@
 package com.example.test.project.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -13,8 +15,10 @@ public class Vacation {
     @Column(name = "ID", unique = true, nullable = false)
     private Long vacationId;
     @Column(name = "START_DATE", unique = false, nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationStartDate;
     @Column(name = "END_DATE", unique = false, nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationEndDate;
     @ManyToOne
     private Employee employee;

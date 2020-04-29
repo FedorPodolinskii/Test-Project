@@ -8,7 +8,7 @@
 <body>
 <h1>Отпуска сотрудника: </h1><h1 th:utext="${employee.fullName}"></h1>
 <br/><br/>
-<a th:href="@{/employees/{employeeId}/vacationList(employeeId=${employee.employeeId})}">Назад к списку отпусков сотрудника</a>
+<a th:href="@{/employees/{employeeId}/vacations(employeeId=${employee.employeeId})}">Назад к списку отпусков сотрудника</a>
 <br/><br/>
 <div th:if="${vacation}">
     <table border="0">

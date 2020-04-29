@@ -5,9 +5,7 @@ import com.example.test.project.exception.BadResourceException;
 import com.example.test.project.exception.ResourceAlreadyExistsException;
 import com.example.test.project.exception.ResourceNotFoundException;
 import com.example.test.project.repository.VacationRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +27,48 @@ public class VacationServiceImpl implements VacationService {
     }
 
     @Override
+    public List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord, String startFilterDate, String endFilterDate) {
+        Sort sort;
+        if (ascending) {
+            sort = Sort.by(sortByColumn).ascending();
+        } else {
+            sort = Sort.by(sortByColumn).descending();
+        }
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, rowsPerPage, sort);
+        List<Vacation> vacations = new ArrayList<>();
+        if (!filterWord.isEmpty()) {
+            if (!startFilterDate.isEmpty()) {
+                if (!endFilterDate.isEmpty()) {
+                     repository.findAllByEmployee_FullNameContainsIgnoreCaseAndVacationStartDateAfterAndVacationEndDateBefore(filterWord, LocalDate.parse(startFilterDate), LocalDate.parse(endFilterDate), pageRequest).forEach(vacations::add);
+                } else {
+                     repository.findAllByEmployee_FullNameContainsIgnoreCaseAndVacationStartDateAfter(filterWord, LocalDate.parse(startFilterDate), pageRequest).forEach(vacations::add);
+                }
+            } else {
+                if (!endFilterDate.isEmpty()) {
+                     repository.findAllByEmployee_FullNameContainsIgnoreCaseAndVacationEndDateBefore(filterWord, LocalDate.parse(endFilterDate), pageRequest).forEach(vacations::add);
+                } else {
+                    repository.findAllByEmployee_FullNameContainsIgnoreCase(filterWord, pageRequest).forEach(vacations::add);
+                }
+            }
+        } else {
+            if (!startFilterDate.isEmpty()) {
+                if (!endFilterDate.isEmpty()) {
+                     repository.findAllByVacationStartDateAfterAndVacationEndDateBefore(LocalDate.parse(startFilterDate), LocalDate.parse(endFilterDate), pageRequest).forEach(vacations::add);
+                } else {
+                     repository.findAllByVacationStartDateAfter(LocalDate.parse(startFilterDate), pageRequest).forEach(vacations::add);
+                }
+            } else {
+                if (!endFilterDate.isEmpty()) {
+                     repository.findAllByVacationEndDateBefore(LocalDate.parse(endFilterDate), pageRequest).forEach(vacations::add);
+                } else {
+                    repository.findAll(pageRequest).forEach(vacations::add);
+                }
+            }
+        }
+        return vacations;
+    }
+
+   /* @Override
     public List<Vacation> findAll(int pageNumber, int rowsPerPage, boolean ascending, String sortByColumn, String filterWord, String startFilterDate, String endFilterDate) {
         List<Vacation> vacations = new ArrayList<>();
         Pageable pageRequest;
@@ -55,7 +95,7 @@ public class VacationServiceImpl implements VacationService {
         all.forEach(vacations::add);
 
         return vacations;
-    }
+    }*/
 
     @Override
     public List<Vacation> findAllByEmployeeId(Long employeeId) throws ResourceNotFoundException {
