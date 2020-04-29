@@ -98,7 +98,8 @@ public class VacationController {
                               @ModelAttribute("vacation") Vacation vacation, @ModelAttribute("employee") Employee employee) {
 
         try {
-            Vacation newVacation = vacationService.save(vacation);
+            vacation.setEmployee(employee);
+            vacationService.save(vacation);
             return "redirect:/employees/" + String.valueOf(employee.getEmployeeId()) + "/vacations";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();

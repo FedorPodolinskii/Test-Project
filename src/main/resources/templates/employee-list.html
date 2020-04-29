@@ -20,16 +20,7 @@
         <a href="/" class="btn btn-primary btn-sm " role="button">Назад на главную</a>
         <a href="/employees/add" class="btn btn-primary btn-sm mx-2" role="button">Добавить сотрудника</a>
     </div>
-    <div class="dropdown mr-auto">
-        <button id="RowsPerPage" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1"
-                data-toggle="dropdown">
-        </button>
-        <div class="dropdown-menu">
-            <a id="dropdown10" class="dropdown-item active" onclick="setRows(10)">10</a>
-            <a id="dropdown25" class="dropdown-item" onclick="setRows(25)">25</a>
-            <a id="dropdown50" class="dropdown-item" onclick="setRows(50)">50</a>
-        </div>
-    </div>
+    <p1>Можно сортировать результат кликнув на заголовок столбца</p1>
     <table class="table table-bordered table-sm thead-light">
         <thead>
         <tr>
@@ -42,12 +33,23 @@
             <th></th>
         </tr>
         </thead>
-        <tbody id="employee_table">
+        <tbody id="employeeTable">
         </tbody>
     </table>
-    <div class="d-flex">
-        <div id="employee_pages" class="ml-auto">
-
+    <div>
+        <div class="dropdown mr-auto">
+            <button id="rowsMenu" type="button" class="btn btn-primary dropdown-toggle btn-sm mt-3 mb-1"
+                    data-toggle="dropdown">
+            </button>
+            <div class="dropdown-menu">
+                <a id="dropdown10" class="dropdown-item active" onclick="setRows(10)">10</a>
+                <a id="dropdown25" class="dropdown-item" onclick="setRows(25)">25</a>
+                <a id="dropdown50" class="dropdown-item" onclick="setRows(50)">50</a>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div id="employeePages" class="ml-auto">
+            </div>
         </div>
     </div>
 </div>
@@ -65,7 +67,7 @@
     $(document).ready(getEmployees);
 
     function sortMyTable(column) {
-        if(sortByColumn===column) {
+        if (sortByColumn === column) {
             ascending = !ascending;
         } else {
             sortByColumn = column;
@@ -95,12 +97,12 @@
             sortByColumn = employeeListPageJson.sortByColumn;
             console.log(employeeListPageJson);
 
-            $('#RowsPerPage').empty().append(rowsPerPage);
+            $('#rowsMenu').empty().append(rowsPerPage);
             let tr = [];
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacations">' + employees[i].fullName + '</a></td>');
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/vacations">' + employees[i].fullName + '</a></td>');
                 tr.push('<td>' + employees[i].dateOfBirth + '</td>'); //TODO format date
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>');
@@ -108,7 +110,7 @@
                 tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');
             }
-            $('#employee_table').empty().append($(tr.join('')));
+            $('#employeeTable').empty().append($(tr.join('')));
             viewPageNav();
         })
     }
@@ -124,20 +126,20 @@
             rowsPerPage = employeeListPageJson.rowsPerPage;
             ascending = employeeListPageJson.ascending;
             sortByColumn = employeeListPageJson.sortByColumn;
-            $('#RowsPerPage').empty().append(rowsPerPage);
+            $('#rowsMenu').empty().append(rowsPerPage);
             let tr = [];
             for (let i = 0; i < employees.length; i++) {
                 tr.push('<tr>');
                 tr.push('<td>' + employees[i].employeeId + '</td>');
-                tr.push('<td>' +'<a href="/employees/'+ employees[i].employeeId +'/vacations">' + employees[i].fullName + '</a></td>');
-                tr.push('<td>' +  employees[i].dateOfBirth + '</td>'); //TODO format date
+                tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/vacations">' + employees[i].fullName + '</a></td>');
+                tr.push('<td>' + employees[i].dateOfBirth + '</td>'); //TODO format date
                 tr.push('<td>' + employees[i].position + '</td>');
                 tr.push('<td>' + employees[i].startDate + '</td>'); //TODO format date
                 tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/edit"' + 'class="btn btn-primary btn-sm" role="button">Изменить</a>' + '</td>');
                 tr.push('<td>' + '<a href="/employees/' + employees[i].employeeId + '/delete"' + 'class="btn btn-danger btn-sm" role="button">Удалить</a>' + '</td>');
                 tr.push('</tr>');
             }
-            $('#employee_table').empty().append($(tr.join('')));
+            $('#employeeTable').empty().append($(tr.join('')));
             viewPageNav();
         })
     }
@@ -155,7 +157,7 @@
         } else {
             tr2.push('<span><a class="btn btn-primary btn-sm" role="button">Следующая страница</a></span>');
         }
-        $('#employee_pages').empty().append($(tr2.join('')));
+        $('#employeePages').empty().append($(tr2.join('')));
     }
 </script>
 </html>

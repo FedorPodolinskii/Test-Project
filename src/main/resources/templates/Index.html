@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
     <head>
         <meta charset="UTF-8"/>
         <title>Главная страница</title>
@@ -13,14 +13,18 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
+    <div class="container">
         <h1>Главная страница</h1>
-        <div>
-                <a th:href="@{/employeeList/}">Список сотрудников</a>
+        <div class="mr-auto my-2">
+            <a href="/employeeList" class="btn btn-primary btn-sm " role="button">Список сотрудников</a>
         </div>
-        <div>
-            <a th:href="@{/vacations/}">Список отпусков</a>
+        <div class="mr-auto my-2">
+            <a href="/vacations" class="btn btn-primary btn-sm " role="button">Список отпусков</a>
         </div>
+        <div class="mr-auto my-2">
+            <a href="/logout" class="btn btn-primary btn-sm " role="button">Выйти из учётной записи</a>
+        </div>
+        <h5 class="small my-2">Тестовое задание выполнил Подолинский Фёдор</h5>
+    </div>
     </body>
-    <br/><br/>
-    <div>Тестовое задание выполнил Подолинский Фёдор</div>
 </html>

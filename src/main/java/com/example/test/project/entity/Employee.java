@@ -109,4 +109,18 @@ public class Employee {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", fullName='" + fullName + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", position='" + position + '\'' +
+                ", startDate=" + startDate +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", vacations=" + vacations +
+                '}';
+    }
 }

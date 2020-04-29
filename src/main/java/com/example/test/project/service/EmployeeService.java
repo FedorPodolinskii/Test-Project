@@ -4,10 +4,11 @@ import com.example.test.project.entity.Employee;
 import com.example.test.project.exception.BadResourceException;
 import com.example.test.project.exception.ResourceAlreadyExistsException;
 import com.example.test.project.exception.ResourceNotFoundException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface EmployeeService {
+public interface EmployeeService extends UserDetailsService {
 
     public boolean existsById(Long aLong);
 
