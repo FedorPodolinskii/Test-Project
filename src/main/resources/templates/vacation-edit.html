@@ -7,7 +7,8 @@
 </head>
 <body>
 <h1 th:text="${add} ? 'Создание отпуска:' : 'Изменение отпуска:'"></h1>
-<a th:href="@{/employees/{employeeId}/vacations/(employeeId=${employee.employeeId})}">Назад к отпускам сотрудника</a>
+<a th:href="@{/vacations}">Назад к отпускам</a>
+<a th:href="@{/employees/{employeeId}/vacations/(employeeId=${employee.employeeId})}">Другие отпуска этого сотрудника</a>
 <br/><br/>
 <form th:action="${add} ? @{/employees/{employeeId}/addVacation/(employeeId=${employee.employeeId})} : @{/employees/{employeeId}/editVacation/{vacationId}/(employeeId=${employee.employeeId},vacationId=${vacation.vacationId})}"
       th:object="${vacation}" method="POST">
@@ -30,7 +31,6 @@
     </table>
     <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'" />
 </form>
-<br/>
-<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error mt-2"></div>
 </body>
 </html>

@@ -7,10 +7,11 @@ import com.example.test.project.exception.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.TreeMap;
 
 public interface EmployeeService extends UserDetailsService {
 
-    public boolean existsById(Long aLong);
+    boolean existsById(Long aLong);
 
     Employee findById(Long employeeId) throws ResourceNotFoundException;
 
@@ -23,4 +24,6 @@ public interface EmployeeService extends UserDetailsService {
     void deleteById(Long aLong) throws ResourceNotFoundException;
 
     Employee save(Employee employee) throws BadResourceException, ResourceAlreadyExistsException;
+
+    TreeMap<String, Long> calculateFreeDays();
 }

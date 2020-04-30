@@ -4,11 +4,14 @@ import com.example.test.project.entity.Employee;
 import com.example.test.project.entity.Vacation;
 import com.example.test.project.exception.BadResourceException;
 import com.example.test.project.exception.ResourceNotFoundException;
+import com.example.test.project.export.GeneratePdfExport;
 import com.example.test.project.model.VacationListPage;
 import com.example.test.project.service.EmployeeService;
 import com.example.test.project.service.VacationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Controller
@@ -41,7 +45,7 @@ public class VacationController {
                                                          @RequestParam(value = "endFilterDate", defaultValue = "") String endFilterDate
     ) {
 
-        List<Vacation> vacations = vacationService.findAll(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord,startFilterDate,endFilterDate);
+        List<Vacation> vacations = vacationService.findAll(pageNumber, rowsPerPage, ascending, sortByColumn, filterWord, startFilterDate, endFilterDate);
 
         long count = vacationService.count();
         boolean hasPrev = pageNumber > 1;
@@ -55,6 +59,21 @@ public class VacationController {
             method = RequestMethod.GET)
     public String viewVacations() {
         return "vacation-list";
+    }
+
+    @RequestMapping(value = "/pdfExport", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> vacationPdfExport() {
+        List<Vacation> vacations = vacationService.findAll();
+        ByteArrayInputStream bis = GeneratePdfExport.vacationsExport(vacations,employeeService.calculateFreeDays());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=vacations.pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
     @GetMapping(value = "/employees/{employeeId}/vacations")

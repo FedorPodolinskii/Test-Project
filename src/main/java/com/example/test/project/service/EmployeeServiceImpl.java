@@ -17,9 +17,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -48,6 +51,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         repository.findAll(pageRequest).forEach(employees::add);
         return employees;
+    }
+
+    public TreeMap<String, Long> calculateFreeDays() {
+        TreeMap<String, Long> freeDays = new TreeMap<>();
+        List<Employee> employees = (List<Employee>) repository.findAll(Sort.by("fullName"));
+        for (Employee employee : employees) {
+            LocalDate startDate = employee.getStartDate();
+            LocalDate today = LocalDate.now();
+            long numberOfFreeDays = ChronoUnit.YEARS.between(startDate, today) * 28;
+            String fullName = employee.getFullName();
+            freeDays.merge(fullName, numberOfFreeDays, Long::sum);
+        }
+        return freeDays;
     }
 
     @Override
@@ -104,7 +120,22 @@ public class EmployeeServiceImpl implements EmployeeService {
                 throw new ResourceAlreadyExistsException("Сотрудник с ID: " + employee.getEmployeeId() +
                         " уже существует");
             }
-            if (!StringUtils.isEmpty(employee.getPassword())) {
+            if (ChronoUnit.YEARS.between(employee.getDateOfBirth(), employee.getStartDate()) < 18) {
+                BadResourceException exc = new BadResourceException("Сотруднику меньше 18 лет в момент приёма на работу");
+                exc.addErrorMessage("Информация заполнена неверно");
+                throw exc;
+            }
+            if (ChronoUnit.YEARS.between(employee.getDateOfBirth(), LocalDate.now()) < 18) {
+                BadResourceException exc = new BadResourceException("Сотруднику меньше 18 лет на сегодняшний день - " + LocalDate.now().toString());
+                exc.addErrorMessage("Информация заполнена неверно");
+                throw exc;
+            }
+            if (employee.getDateOfBirth().isAfter(employee.getStartDate()) && employee.getDateOfBirth().isEqual(employee.getStartDate())) {
+                BadResourceException exc = new BadResourceException("Дата рождения меньше даты приёма на работу");
+                exc.addErrorMessage("Информация заполнена неверно");
+                throw exc;
+            }
+            if (StringUtils.isEmpty(employee.getPassword())) {
                 BadResourceException exc = new BadResourceException("Пароль не может быть пустым");
                 exc.addErrorMessage("Информация заполнена неверно");
                 throw exc;

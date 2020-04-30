@@ -45,18 +45,16 @@
         <tr th:if="${employee.employeeId}">
             <td>Пароль</td>
             <td>:</td>
-            <td><input type="password" th:field="*{password}" /></td>
+            <td><input type="password" th:name="password" /></td>
         </tr>
         <tr th:unless="${employee.employeeId}">
             <td>Пароль</td>
             <td>:</td>
-            <td><input type="password" th:field="*{password}" required></td>
+            <td><input type="password" th:name="password" required></td>
         </tr>
     </table>
     <input type="submit" th:value="${add} ? 'Создать' : 'Изменить'"/>
 </form>
-
-<br/>
-<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error"></div>
+<div th:if="${errorMessage}" th:utext="${errorMessage}" class="error mt-2"></div>
 </body>
 </html>

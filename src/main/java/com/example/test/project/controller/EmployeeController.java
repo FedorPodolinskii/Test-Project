@@ -92,6 +92,7 @@ public class EmployeeController {
         Employee employee = null;
         try {
             employee = service.findById(employeeId);
+            employee.setPassword("");
         } catch (ResourceNotFoundException ex) {
             model.addAttribute("errorMessage", "Employee not found");
         }

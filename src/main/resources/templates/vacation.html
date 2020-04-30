@@ -31,9 +31,10 @@
     <br/><br/>
     <div th:if="not ${allowDelete}">
         <a th:href="@{/employees/{employeeId}/editVacation/{vacationId}/(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Изменить</a> |
-        <a th:href="@{/employees/{employeeId}/deleteVacation/{vacationId}/(eemployeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Удалить</a>
+        <a th:href="@{/employees/{employeeId}/deleteVacation/{vacationId}/(employeeId=${employee.employeeId}vacationId=${vacation.vacationId})}">Удалить</a>
     </div>
-    <form th:if="${allowDelete}" th:action="@{/employees/{employeeId}/deleteVacation/{vacationId}/(eemployeeId=${employee.employeeId}vacationId=${vacation.vacationId})}" method="POST">
+    <form th:if="${allowDelete}"
+          th:action="@{/employees/{employeeId}/deleteVacation/{vacationId}/(employeeId=${employee.employeeId},vacationId=${vacation.vacationId})}" method="POST">
         Удалить этот отпуск? <input type="submit" th:value="Да" />
     </form>
 </div>
